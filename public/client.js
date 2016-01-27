@@ -1,9 +1,6 @@
 var clientID = 0;
 
 function clientConnect() {
-	try {
-		document.write("<script src='/socket.io/socket.io.js'></script>");
-		socket = io();
    		socket.on('spawnMyShip', function(packet){
 			shipList = packet.shipList;
 			clientID = packet.index;
@@ -23,8 +20,4 @@ function clientConnect() {
 	  	socket.on('player has left', function(index){
 			shipList[index] = null;
 	  	});
-	  	throw 'error';
-	} catch (e) {
-
-	}
 }

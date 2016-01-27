@@ -1,14 +1,16 @@
-var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-var msgLog = [];
+var express = require('express')
+  , http = require('http');
+var app = express();
+var path = require('path');
+app.use(express.static(path.join(__dirname, 'public')));
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
+
+
 var clientID = 0;
 var client = {};
 var shipList = [];
 var maxPlayers = 20;
-app.get('/', function(req, res){
-  	res.sendfile("main.html");
-});
 
 io.on('connection', function(socket){
 	
@@ -20,7 +22,9 @@ io.on('connection', function(socket){
 	newShip.ID = clientID;
 	shipList[clientID] = newShip;
 	console.log('User '+ client[socket.id] + ' has joined.');
+
 	socket.emit('spawnMyShip',{shipList:shipList,index:clientID});
+
 	socket.broadcast.emit('updateShipList',newShip);
 
 	socket.on('movement', function(ship){
@@ -36,13 +40,7 @@ io.on('connection', function(socket){
 		console.log('User '+ client[socket.id] + ' disconnected.');
   	});
 
-	
 });
-
-http.listen(3000, function(){
-  console.log('listening on *:3000');
-});
-
 
 function setMaxPlayers(){
 	for(var i=0; i<maxPlayers;i+=1){
@@ -58,4 +56,7 @@ function findEmptySlot(){
 	}
 }
 
-setMaxPlayers();
+server.listen(3000, function(){
+  console.log('listening on *:3000');
+  setMaxPlayers();
+});

@@ -1,8 +1,9 @@
 <html>
 <canvas id ="gameCanvas" width = "800" height = "600"></canvas>
 
-<script src="./client.js"></script>
+<script src='socket.io/socket.io.js'></script>
 <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script src='client.js'></script>
 <script type="text/javascript">
 
 
@@ -27,12 +28,11 @@ function update() {
 }
 
 window.onload = function() {
-	if(!clientConnect()) {
+	try{clientConnect()} catch (e) {
 		myShip = {x:100,y:100};
    		shipList[0] = myShip;
    		window.addEventListener("keydown", handleKeys, false);
 	}
-	
 	var framesPerSecond = 1000/30;
 	canvasContext = canvas.getContext('2d');
 	game = setInterval(update,framesPerSecond);
