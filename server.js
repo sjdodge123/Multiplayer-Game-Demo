@@ -4,6 +4,8 @@ var app = express();
 var path = require('path');
 app.use(express.static(path.join(__dirname, 'public')));
 var server = http.createServer(app);
+
+
 var io = require('socket.io').listen(server);
 
 
@@ -13,9 +15,9 @@ var shipList = [];
 var maxPlayers = 20;
 
 io.on('connection', function(socket){
-	
 	clientID = findEmptySlot();
 	client[socket.id] = clientID;
+	console.log('User '+ client[socket.id] + ' has joined.');
 	var newShip = {};
 	newShip.x = 400;
 	newShip.y = 400;
@@ -56,7 +58,10 @@ function findEmptySlot(){
 	}
 }
 
+
 server.listen(3000, function(){
   console.log('listening on *:3000');
   setMaxPlayers();
 });
+
+

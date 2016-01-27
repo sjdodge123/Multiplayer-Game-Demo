@@ -28,7 +28,7 @@ function update() {
 }
 
 window.onload = function() {
-	try{clientConnect()} catch (e) {
+	try{socket = clientConnect();} catch (e) {
 		myShip = {x:100,y:100};
    		shipList[0] = myShip;
    		window.addEventListener("keydown", handleKeys, false);

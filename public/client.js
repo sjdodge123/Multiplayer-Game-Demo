@@ -1,6 +1,7 @@
 var clientID = 0;
 
 function clientConnect() {
+		var socket = io();
    		socket.on('spawnMyShip', function(packet){
 			shipList = packet.shipList;
 			clientID = packet.index;
@@ -20,4 +21,5 @@ function clientConnect() {
 	  	socket.on('player has left', function(index){
 			shipList[index] = null;
 	  	});
+	  	return socket;
 }
