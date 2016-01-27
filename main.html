@@ -1,0 +1,130 @@
+<html>
+<canvas id ="gameCanvas" width = "800" height = "600"></canvas>
+
+<script src="./client.js"></script>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script type="text/javascript">
+
+
+var canvas = document.getElementById('gameCanvas'),
+canvasContext,
+
+
+
+mouseX,
+mouseY,
+myShip = null,
+shipList = [],
+socket,
+game;
+
+
+
+
+// **************************	MAIN    **************************
+function update() {
+	drawEverything();
+}
+
+window.onload = function() {
+	if(!clientConnect()) {
+		myShip = {x:100,y:100};
+   		shipList[0] = myShip;
+   		window.addEventListener("keydown", handleKeys, false);
+	}
+	
+	var framesPerSecond = 1000/30;
+	canvasContext = canvas.getContext('2d');
+	game = setInterval(update,framesPerSecond);
+	canvas.addEventListener("mousemove", calcMousePos, false);
+	canvas.addEventListener("click", handleClick, false);
+}
+
+function calcMousePos(evt){
+	evt.preventDefault();
+	var rect = canvas.getBoundingClientRect(),
+		root = document.documentElement;
+	mouseX = evt.pageX - rect.left - root.scrollLeft;
+	mouseY = evt.pageY - rect.top - root.scrollTop;
+}
+
+function handleClick(evt){
+	evt.preventDefault();
+	console.log('click');
+}
+
+
+function handleKeys(evt){
+	var moveFoward = false;
+	var moveBackward = false;
+	var turnLeft = false;
+	var turnRight = false;
+	switch(evt.keyCode) {
+	    case 65: {turnLeft = true; break;} //Left key
+        case 87: {moveFoward = true; break;} //Up key
+        case 68: {turnRight = true; break;}//Right key
+        case 83: {moveBackward = true; break;} //Down key
+	}
+    if(moveFoward){
+    	myShip.y -= 5;
+    }
+    if(moveBackward){
+    	myShip.y += 5; 
+    }
+    if(turnLeft){
+    	myShip.x -=5;
+    }
+    if(turnRight){
+    	myShip.x += 5;
+    }
+    if(socket){
+    	socket.emit('movement', myShip);
+    }
+}
+
+
+
+// **************************	DRAWING   **************************
+
+function drawEverything() {
+	drawBackground();
+	for(var i=0; i<shipList.length;i+=1){
+		if(shipList[i] != null){
+			drawShip(shipList[i].x,shipList[i].y);
+		}
+	}
+}
+
+function drawBackground() {
+	canvasContext.fillStyle = 'black';
+	canvasContext.fillRect(0,0,canvas.width,canvas.height);
+}
+
+function drawShip(x,y) {
+	canvasContext.fillStyle = 'white';
+	canvasContext.fillRect(x,y,50,50);
+}
+
+
+
+
+
+
+
+
+
+
+
+// **************************	PHYSICS   **************************
+
+
+
+
+
+
+
+
+
+
+</script>
+</html>
